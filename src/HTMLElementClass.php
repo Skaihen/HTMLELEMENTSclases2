@@ -1,6 +1,8 @@
 <?php
 namespace DAW\HTMLElementClass;
 
+require "tag_attributes.php";
+
 class HTMLElementClass
 {
     private string $tagName;
