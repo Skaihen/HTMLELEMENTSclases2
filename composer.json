@@ -1,0 +1,21 @@
+{
+    "require": {
+        "php": "^8"
+    },
+    "require-dev": {
+        "php": "^8",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "PHPUnit\\": "vendor/phpunit/phpunit/src/",
+            "DAW\\HTMLElementClass\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PHPUnit\\": "vendor/phpunit/phpunit/src/",
+            "DAW\\HTMLElementClass\\": "src/"
+        }
+    }
+}
