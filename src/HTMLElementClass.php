@@ -1,7 +1,7 @@
 <?php
 namespace DAW\HTMLElementClass;
 
-require "tag_attributes.php";
+require 'tag_attributes.php';
 
 class HTMLElementClass
 {
@@ -16,10 +16,52 @@ class HTMLElementClass
         $this->attributes = $attributes;
         $this->content = $isEmpty?null:$content;
         $this->isEmpty = $isEmpty;
+
+        return $this->validateConstruct($tagName, $attributes);
     }
 
-    private function validarContenido(): bool{
-        
+    private function validateConstruct(string $tagName, array $attributes): bool{
+        $tryValidate = [$this->validateContent($tagName), $this->validateAttributes($tagName, $attributes)];
+        $validationLen = count($tryValidate);
+        if (count(array_filter($tryValidate)) < $validationLen) {
+            return false;
+        }
+        return true;
+    }
+
+    private function validateContent(string $tagName): bool{
+        foreach (EMPTY_TAGS as $tag) {
+            if ($tagName == $tag){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function validateAttributes(string $tagName, array $attributes): bool{
+        foreach ($attributes as $key) {
+            if (array_key_exists($key, ATTRIBUTES_TAG)){
+                if (!array_key_exists($tagName, ATTRIBUTES_TAG[$key])){
+                    return false;
+                }
+            }else{
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function validateAttributeValue(array $attributes): bool{
+        foreach ($attributes as $key) {
+            if (array_key_exists($key, ATTRIBUTES_TAG)){
+                if (!array_key_exists($tagName, ATTRIBUTES_TAG[$key])){
+                    return false;
+                }
+            }else{
+                return false;
+            }
+        }
+        return true;
     }
 
     public function getTagName(): string{
