@@ -18,6 +18,10 @@ class HTMLElementClass
         $this->isEmpty = $isEmpty;
     }
 
+    private function validarContenido(): bool{
+        
+    }
+
     public function getTagName(): string{
         return $this->tagName;
     }
