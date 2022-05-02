@@ -41,6 +41,37 @@ final class HTMLElementClassTest extends TestCase{
         $this->assertEquals($esperado, $HTMLElementClass->getHTML());
     }
 
+    public function DP_test_validateHTMLElementClass(){
+        return [
+            "TEST P" => [
+                '<p id = "ParrafoIntroduccion" class = "Normal">ParrafoIntroduccionDeprueba</p>',
+                "p",
+                [
+                    "id" => "ParrafoIntroduccion",
+                    "class" => "Normal"
+                ],
+                [
+                    "ParrafoIntroduccion",
+                    "Deprueba"
+                ],
+                false
+            ],
+            "TEST BR" => [
+                "<br >",
+                "br",
+                [],
+                [],
+                true
+            ]
+        ];
+    }
+    /**
+    * @dataProvider DP_test_validateHTMLElementClass
+    */
+    public function test_validateHTMLElementClass($esperado, $tagName, $attributes, $content, $isEmpty){
+        $HTMLElementClass = new HTMLElementClass($tagName, $attributes, $content, $isEmpty);
+        $this->assertEquals($esperado, $HTMLElementClass->getHTML());
+    }
 
     public function DP_test_getTagName(){
         return [
@@ -74,12 +105,9 @@ final class HTMLElementClassTest extends TestCase{
     public function DP_test_addContent(){
         return [
             "TEST P" => [
-                ["Prueba", "Prueba2"],
+                ["Prueba","Prueba2"],
                 "p",
-                [
-                    "id" => "ParrafoIntroduccion",
-                    "class" => "Normal"
-                ],
+                [],
                 ["Prueba"],
                 false
             ]
@@ -98,11 +126,10 @@ final class HTMLElementClassTest extends TestCase{
     public function DP_test_addAttribute(){
         return [
             "TEST P" => [
-                ["id" => "ParrafoIntroduccion", "class" => "Normal", "Test" => "Prueba"],
+                ["id" => "ParrafoIntroduccion", "class" => "Normal"],
                 "p",
                 [
-                    "id" => "ParrafoIntroduccion",
-                    "class" => "Normal"
+                    "id" => "ParrafoIntroduccion"
                 ],
                 "Prueba",
                 false
@@ -114,7 +141,7 @@ final class HTMLElementClassTest extends TestCase{
     */
     public function test_addAttribute($esperado, $tagName, $attributes, $content, $isEmpty){
         $HTMLElementClass = new HTMLElementClass($tagName, $attributes, $content, $isEmpty);
-        $HTMLElementClass->addAttribute("Test", "Prueba");
+        $HTMLElementClass->addAttribute("class", "Normal");
         $this->assertEquals($esperado, $HTMLElementClass->getAttributes());
     }
 

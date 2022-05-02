@@ -12,16 +12,18 @@ class HTMLElementClass
 
     function __construct(string $tagName, array $attributes, array | string $content, $isEmpty)
     {
-        $this->tagName = $tagName;
-        $this->attributes = $attributes;
-        $this->content = $isEmpty?null:$content;
-        $this->isEmpty = $isEmpty;
-
-        return $this->validateConstruct($tagName, $attributes);
+        if ($this->validateConstruct($tagName, $attributes, $content)){
+            $this->tagName = $tagName;
+            $this->attributes = $attributes;
+            $this->content = $isEmpty?null:$content;
+            $this->isEmpty = $isEmpty;
+        } else {
+            return false;
+        }
     }
 
-    private function validateConstruct(string $tagName, array $attributes): bool{
-        $tryValidate = [$this->validateContent($tagName), $this->validateAttributes($tagName, $attributes)];
+    private function validateConstruct(string $tagName, array $attributes, array | string $content): bool{
+        $tryValidate = [$this->validateContent($tagName, $content), $this->validateAttributes($tagName, $attributes), $this->validateAttributeValue($attributes)];
         $validationLen = count($tryValidate);
         if (count(array_filter($tryValidate)) < $validationLen) {
             return false;
@@ -29,9 +31,9 @@ class HTMLElementClass
         return true;
     }
 
-    private function validateContent(string $tagName): bool{
-        foreach (EMPTY_TAGS as $tag) {
-            if ($tagName == $tag){
+    private function validateContent(string $tagName, array | string $content): bool{
+        if (array_key_exists($tagName, EMPTY_TAGS)){
+            if ($content != null){
                 return false;
             }
         }
@@ -39,26 +41,32 @@ class HTMLElementClass
     }
 
     private function validateAttributes(string $tagName, array $attributes): bool{
-        foreach ($attributes as $key) {
-            if (array_key_exists($key, ATTRIBUTES_TAG)){
-                if (!array_key_exists($tagName, ATTRIBUTES_TAG[$key])){
+        if (!empty($attributes)){
+            foreach ($attributes as $key => $value) {
+                if (array_key_exists($key, ATTRIBUTES_TAG)){
+                    if (ATTRIBUTES_TAG[$key] != "global"){
+                        if (!array_key_exists($tagName, ATTRIBUTES_TAG[$key])) {
+                            return false;
+                        }
+                    }
+                }else{
                     return false;
                 }
-            }else{
-                return false;
             }
         }
         return true;
     }
 
     private function validateAttributeValue(array $attributes): bool{
-        foreach ($attributes as $key) {
-            if (array_key_exists($key, ATTRIBUTES_TAG)){
-                if (!array_key_exists($tagName, ATTRIBUTES_TAG[$key])){
+        if (!empty($attributes)){
+            foreach ($attributes as $key => $value) {
+                if (array_key_exists($key, ATTRIBUTE_VALUES)){
+                    if (ATTRIBUTE_VALUES[$key] != null && !array_key_exists($value, ATTRIBUTES_TAG[$key])){
+                        return false;
+                    }
+                }else{
                     return false;
                 }
-            }else{
-                return false;
             }
         }
         return true;
