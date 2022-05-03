@@ -18,24 +18,19 @@ class HTMLElementClass
             $this->content = $isEmpty?null:$content;
             $this->isEmpty = $isEmpty;
         } else {
-            return false;
+            return false; // Cambiar por throw
         }
     }
 
     private function validateConstruct(string $tagName, array $attributes, array | string $content): bool{
         $tryValidate = [$this->validateContent($tagName, $content), $this->validateAttributes($tagName, $attributes), $this->validateAttributeValue($attributes)];
         $validationLen = count($tryValidate);
-        if (count(array_filter($tryValidate)) < $validationLen) {
-            return false;
-        }
-        return true;
+        return !(count(array_filter($tryValidate)) < $validationLen);
     }
 
     private function validateContent(string $tagName, array | string $content): bool{
         if (array_key_exists($tagName, EMPTY_TAGS)){
-            if ($content != null){
-                return false;
-            }
+            return !($content != null);
         }
         return true;
     }
@@ -45,9 +40,7 @@ class HTMLElementClass
             foreach ($attributes as $key => $value) {
                 if (array_key_exists($key, ATTRIBUTES_TAG)){
                     if (ATTRIBUTES_TAG[$key] != "global"){
-                        if (!array_key_exists($tagName, ATTRIBUTES_TAG[$key])) {
-                            return false;
-                        }
+                        return (array_key_exists($tagName, ATTRIBUTES_TAG[$key]));
                     }
                 }else{
                     return false;
@@ -61,9 +54,7 @@ class HTMLElementClass
         if (!empty($attributes)){
             foreach ($attributes as $key => $value) {
                 if (array_key_exists($key, ATTRIBUTE_VALUES)){
-                    if (ATTRIBUTE_VALUES[$key] != null && !array_key_exists($value, ATTRIBUTES_TAG[$key])){
-                        return false;
-                    }
+                    return !(ATTRIBUTE_VALUES[$key] != null && !array_key_exists($value, ATTRIBUTES_TAG[$key]));
                 }else{
                     return false;
                 }
