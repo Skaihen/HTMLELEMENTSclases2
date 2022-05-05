@@ -22,6 +22,22 @@ class HTMLElementClass
         }
     }
 
+    public static function create(string $tagName, array $attributes, array | string $content, $isEmpty){
+        return new HTMLElementClass($tagName, $attributes, $content, $isEmpty);
+    }
+
+    public static function createHTML5(){
+        $doctype = self::create("!DOCTYPE", ["html"], [], true);
+        
+        $title = self::create("title", [], "document", false);
+        $metachild1 = self::create("meta", ["charset"=>"UFT-8"], [], false);
+        $metachild2 = self::create("meta", ["charset"=>"UFT-8"], [], false);
+        $metachild3 = self::create("meta", ["charset"=>"UFT-8"], [], false);
+        $head = self::create("head", [], [$metachild1, $metachild2, $metachild3, $title], false);
+        $body = self::create("body", [], [], false);
+        $html = self::create("html", [], [$head, $body], false);
+    }
+
     private function validateConstruct(string $tagName, array $attributes, array | string $content): bool{
         $tryValidate = [$this->validateContent($tagName, $content), $this->validateAttributes($tagName, $attributes), $this->validateAttributeValue($attributes)];
         $validationLen = count($tryValidate);
